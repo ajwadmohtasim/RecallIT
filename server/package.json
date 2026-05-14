@@ -1,0 +1,27 @@
+{
+  "name": "recallit-server",
+  "version": "1.0.0",
+  "description": "RecallIT backend",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "seed": "node src/utils/seedData.js",
+    "seed:bulk": "node src/utils/seedBulkData.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb-memory-server": "^10.3.0",
+    "mongoose": "^8.19.1",
+    "ts-fsrs": "^5.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

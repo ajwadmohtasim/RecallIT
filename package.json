@@ -1,0 +1,20 @@
+{
+  "name": "recallit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RecallIT - MERN + FSRS flashcard app",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:persistent": "npm run db:up && npm run dev",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "db:up": "docker compose up -d mongo",
+    "db:down": "docker compose down",
+    "seed": "npm run seed --prefix server",
+    "seed:bulk": "npm run seed:bulk --prefix server",
+    "test": "npm run test --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
