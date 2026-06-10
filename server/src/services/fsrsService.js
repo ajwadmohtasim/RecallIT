@@ -19,6 +19,9 @@ export const normalizeRating = (value) => {
   return key;
 };
 
+const toBool = (value, fallback) =>
+  typeof value === 'boolean' ? value : fallback;
+
 export const normalizeFsrsSettings = (settings = {}) => {
   const requestRetentionRaw = Number(settings.requestRetention);
   const requestRetention = Number.isFinite(requestRetentionRaw)
@@ -27,14 +30,8 @@ export const normalizeFsrsSettings = (settings = {}) => {
 
   return {
     requestRetention,
-    enableShortTerm:
-      typeof settings.enableShortTerm === 'boolean'
-        ? settings.enableShortTerm
-        : DEFAULT_FSRS_SETTINGS.enableShortTerm,
-    enableFuzz:
-      typeof settings.enableFuzz === 'boolean'
-        ? settings.enableFuzz
-        : DEFAULT_FSRS_SETTINGS.enableFuzz,
+    enableShortTerm: toBool(settings.enableShortTerm, DEFAULT_FSRS_SETTINGS.enableShortTerm),
+    enableFuzz: toBool(settings.enableFuzz, DEFAULT_FSRS_SETTINGS.enableFuzz),
   };
 };
 

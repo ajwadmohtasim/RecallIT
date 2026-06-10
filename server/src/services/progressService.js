@@ -31,7 +31,8 @@ export const updateUserProgressAfterReview = async ({ user, reviewedAt, xp }) =>
   user.stats = user.stats || {};
 
   const dailyGoal = Math.max(1, Number(user.stats.dailyGoal || 20));
-  const reviewedToday = await getDailyReviewCount(user._id, reviewedAt);
+  // +1 because this review hasn't been saved to the DB yet when we query
+  const reviewedToday = (await getDailyReviewCount(user._id, reviewedAt)) + 1;
   const todayStart = startOfDay(reviewedAt);
   const alreadyMetToday = isSameDay(user.stats.lastGoalMetOn, todayStart);
 

@@ -9,7 +9,7 @@ router.get('/', async (req, res, next) => {
   try {
     const ownerId = req.user.id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
-    const decks = await Deck.find({ owner: ownerId }).sort({ createdAt: -1 }).lean();
+    const decks = await Deck.find({ owner: ownerObjectId }).sort({ createdAt: -1 }).lean();
 
     const deckIds = decks.map((d) => d._id);
     const now = new Date();

@@ -30,6 +30,14 @@ const toPublicUser = (user) => ({
   },
 });
 
+// Shared: fetch user + goal progress, or respond 401 if missing
+const fetchUserWithProgress = async (userId) => {
+  const user = await User.findById(userId).lean();
+  if (!user) return { user: null };
+  const goalProgress = await getCurrentGoalProgress(user._id, user?.stats?.dailyGoal || 20);
+  return { user, goalProgress };
+};
+
 router.post('/register', async (req, res, next) => {
   try {
     const name = req.body?.name?.trim();
@@ -91,17 +99,10 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/me', requireAuth, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).lean();
-    if (!user) {
-      return res.status(401).json({ message: 'User no longer exists.' });
-    }
+    const { user, goalProgress } = await fetchUserWithProgress(req.user.id);
+    if (!user) return res.status(401).json({ message: 'User no longer exists.' });
 
-    const goalProgress = await getCurrentGoalProgress(user._id, user?.stats?.dailyGoal || 20);
-
-    res.json({
-      ...toPublicUser(user),
-      goalProgress,
-    });
+    res.json({ ...toPublicUser(user), goalProgress });
   } catch (err) {
     next(err);
   }
@@ -109,12 +110,8 @@ router.get('/me', requireAuth, async (req, res, next) => {
 
 router.get('/settings', requireAuth, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).lean();
-    if (!user) {
-      return res.status(401).json({ message: 'User no longer exists.' });
-    }
-
-    const goalProgress = await getCurrentGoalProgress(user._id, user?.stats?.dailyGoal || 20);
+    const { user, goalProgress } = await fetchUserWithProgress(req.user.id);
+    if (!user) return res.status(401).json({ message: 'User no longer exists.' });
 
     res.json({
       fsrsSettings: normalizeFsrsSettings(user.fsrsSettings || {}),

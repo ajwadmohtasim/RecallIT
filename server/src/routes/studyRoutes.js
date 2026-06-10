@@ -152,13 +152,9 @@ router.post('/:deckId/review', async (req, res, next) => {
     card.due = fsrsCard.due;
     await card.save();
 
-    const mode = ['normal', 'exam', 'cram', 'weak'].includes(req.body?.mode) ? req.body.mode : 'normal';
-    const dueScope = ['due', 'overdue', 'today', 'any'].includes(req.body?.dueScope)
-      ? req.body.dueScope
-      : 'due';
-    const tagsApplied = Array.isArray(req.body?.tags)
-      ? req.body.tags.map((x) => String(x || '').trim().toLowerCase()).filter(Boolean)
-      : [];
+    const reviewFilters = normalizeStudyFilters(req.body || {});
+    const { mode, dueScope } = reviewFilters;
+    const tagsApplied = reviewFilters.tags;
 
     await ReviewLog.create({
       owner: req.user.id,
@@ -167,7 +163,7 @@ router.post('/:deckId/review', async (req, res, next) => {
       rating: ratingKey,
       mode,
       dueScope,
-      weakOnly: Boolean(req.body?.weakOnly),
+      weakOnly: reviewFilters.weakOnly,
       tagsApplied,
       reviewedAt: now,
     });
